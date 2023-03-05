@@ -1,0 +1,54 @@
+#prediction using supervised machine learning
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+#Reading data
+data=pd.read_csv('C:\\Users\\admin\\Pictures\\student_scores - student_scores.csv')
+data
+
+#Exploring data
+data.shape
+data.describe()
+data.info()
+data.plot(kind='scatter',x='Hours',y='Scores')
+plt.show
+data.corr(method='pearson')
+data.corr(method='spearman')
+hours=data['Hours']
+scores=data['Scores']
+sns.distplot(hours)
+sns.distplot(scores)
+
+#Linera Regression
+x=data.iloc[:,:-1].values
+y=data.iloc[:,1].values
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=50)
+from sklearn.linear_model import LinearRegression
+reg=LinearRegression()
+reg.fit(x_train, y_train)
+m=reg.coef_
+c=reg.intercept_
+line=m*x+c
+plt.scatter(x,y)
+plt.plot(x,line)
+plt.show()
+y_pred=reg.predict(x_test)
+actual_predicted=pd.DataFrame({'Traget':y_test,'Predicted':y_pred})
+actual_predicted
+sns.set_style('white')
+sns.distplot(np.array(y_test-y_pred))
+plt.show()
+
+
+#what would be the predicted score if a student studies for 9.25 hours/days
+h=9.25
+s=reg.predict([[h]])
+print('If a student studies for {} hours per days he will score {} % in exam'.format(h,s))
+
+
